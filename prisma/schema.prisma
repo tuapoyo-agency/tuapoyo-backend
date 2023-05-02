@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model City {
+  id_city    Int      @id @default(autoincrement())
+  name       String   @db.VarChar(45)
+  id_country Int
+  country    Country  @relation(fields: [id_country], references: [id_country], onDelete: NoAction, onUpdate: NoAction, map: "fk_city_country")
+  candidate_born     Candidate[] @relation("candidate_born")
+  candidate_live     Candidate[] @relation("candidate_live")
+  jobs        Job[]
+
+  @@index([id_country], map: "fk_city_country_idx")
+}
+
+model Country {
+  id_country Int    @id @default(autoincrement())
+  name       String @db.VarChar(45)
+  cities      City[]
+}
+
+model Gender {
+  id_gender Int    @id @default(autoincrement())
+  name      String @db.VarChar(45)
+  people    Person[]
+}
+
+model Person {
+  id_person         Int      @id @default(autoincrement())
+  first_name        String   @db.VarChar(45)
+  last_name         String   @db.VarChar(45)
+  phone             String   @db.VarChar(45)
+  dpi               Int
+  email             String   @db.VarChar(45)
+  profilePic        String?  @db.VarChar(255)
+  id_gender         Int
+  gender            Gender  @relation(fields: [id_gender], references: [id_gender], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_gender")
+  active            Int
+  date_added        DateTime @default(now()) @db.DateTime(0)
+  date_modified     DateTime @default(now()) @db.DateTime(0)
+  candidate         Candidate?
+  employer          Employer?
+
+  @@index([id_gender], map: "fk_person_gender_idx")
+}
+
+model Marital_Status {
+  id_marital_status Int    @id @default(autoincrement())
+  name              String @db.VarChar(45)
+  candidates         Candidate[]
+}
+
+model Candidate {
+  id_candidate      Int      @id @default(autoincrement())
+  id_person         Int      @unique 
+  person            Person   @relation(fields: [id_person], references: [id_person], onDelete: NoAction, onUpdate: NoAction, map: "fk_candidate_person")
+  birthdate         DateTime @db.Date
+  id_city_born      Int
+  city_born         City     @relation("candidate_born", fields: [id_city_born], references: [id_city], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_city_born")
+  id_city_live      Int
+  city_live         City     @relation("candidate_live", fields: [id_city_live], references: [id_city], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_city_live")
+  address           String   @db.VarChar(255)
+  latitude          Decimal  @db.Decimal(18, 15)
+  longitude         Decimal  @db.Decimal(18, 15)
+  id_marital_status Int
+  marital_status    Marital_Status @relation(fields: [id_marital_status], references: [id_marital_status], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_marital_status")
+  id_work_schedule Int
+  work_schedule     Work_Schedule @relation(fields: [id_work_schedule], references: [id_work_schedule], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_id_work_schedule")
+  children_no       Int
+  children_description String? @db.VarChar(255)
+  can_read          Int
+  can_write         Int
+  yoe               Int
+  yoe_description   String?   @db.VarChar(255)
+  cook_level        Int
+  hand_wash         Int
+  washing_machine   Int
+  iron              Int
+  stove             Int
+  coffee_maker      Int
+  microwave         Int
+  blender           Int
+  children_care_experience Int
+  children_care_description String?   @db.VarChar(255)
+  tattoos           Int
+  pregnant          Int
+  disability        Int
+  disability_description String?   @db.VarChar(255)
+  pet_care          Int
+  uniform           Int
+  availability      Int
+  expected_salary   Decimal?      @db.Decimal(15, 2)
+  date_added        DateTime @default(now()) @db.DateTime(0)
+  date_modified     DateTime @default(now()) @db.DateTime(0)
+  messages          Message[]
+  applicants        Applicant[]
+
+  @@index([id_person], map: "fk_candidate_person_idx")
+  @@index([id_city_born], map: "fk_candidate_city_born_idx")
+  @@index([id_city_live], map: "fk_candidate_city_live_idx")
+  @@index([id_marital_status], map: "fk_candidate_marital_status_idx")
+  @@index([id_work_schedule], map: "fk_candidate_work_schedule_idx")
+}
+
+model Work_Schedule {
+  id_work_schedule  Int    @id @default(autoincrement())
+  name              String @db.VarChar(45)
+  jobs              Job[]
+  candidates        Candidate[]
+}
+
+model Employer {
+  id_employer       Int      @id @default(autoincrement())
+  id_person         Int      @unique
+  person            Person   @relation(fields: [id_person], references: [id_person], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_person")
+  date_added        DateTime @default(now()) @db.DateTime(0)
+  date_modified     DateTime @default(now()) @db.DateTime(0)
+  jobs              Job[]
+  
+  @@index([id_person], map: "fk_employer_person_idx")
+}
+
+model Job {
+  id_job            Int      @id @default(autoincrement())
+  id_employer       Int
+  employer          Employer   @relation(fields: [id_employer], references: [id_employer], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_employer")
+  id_city           Int
+  city              City     @relation(fields: [id_city], references: [id_city], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_city")
+  address           String   @db.VarChar(255)
+  latitude          Decimal  @db.Decimal(18, 15)
+  longitude         Decimal  @db.Decimal(18, 15)
+  id_work_schedule  Int
+  work_schedule     Work_Schedule @relation(fields: [id_work_schedule], references: [id_work_schedule], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_id_work_schedule")
+  children_care     Int
+  pet_care          Int
+  min_salary        Decimal      @db.Decimal(15, 2)
+  max_salary        Decimal      @db.Decimal(15, 2)
+  job_description   String?   @db.VarChar(255)
+  date_added        DateTime @default(now()) @db.DateTime(0)
+  date_modified     DateTime @default(now()) @db.DateTime(0)
+  applicants        Applicant[]
+  messages          Message[]
+  
+  @@index([id_employer], map: "fk_job_employer_idx")
+  @@index([id_city], map: "fk_job_city_idx")
+  @@index([id_work_schedule], map: "fk_job_work_schedule_idx")
+}
+
+model Message {
+  id_message        Int      @id @default(autoincrement())
+  id_job            Int      
+  job               Job   @relation(fields: [id_job], references: [id_job], onDelete: NoAction, onUpdate: NoAction, map: "fk_message_job")
+  id_candidate      Int
+  candidate         Candidate   @relation(fields: [id_candidate], references: [id_candidate], onDelete: NoAction, onUpdate: NoAction, map: "fk_message_candidate")
+  date_added        DateTime  @default(now()) @db.DateTime(0)
+
+  @@index([id_job], map: "fk_message_job_idx")
+}
+
+model Applicant_Status {
+  id_applicant_status       Int      @id @default(autoincrement())
+  name                      String @db.VarChar(45)
+  applicants                Applicant[]
+}
+
+model Applicant {
+  id_applicant        Int   @id @default(autoincrement())
+  id_job              Int
+  job                 Job   @relation(fields: [id_job], references: [id_job], onDelete: NoAction, onUpdate: NoAction, map: "fk_applicant_job")
+  id_candidate        Int 
+  candidate           Candidate   @relation(fields: [id_candidate], references: [id_candidate], onDelete: NoAction, onUpdate: NoAction, map: "fk_applicant_candidate")
+  id_applicant_status       Int
+  applicant_status          Applicant_Status   @relation(fields: [id_applicant_status], references: [id_applicant_status], onDelete: NoAction, onUpdate: NoAction, map: "fk_applicant_applicant_status")
+  date_added        DateTime  @default(now()) @db.DateTime(0)
+
+  @@index([id_job], map: "fk_applicant_job_idx")
+  @@index([id_candidate], map: "fk_applicant_candidate_idx")
+  @@index([id_applicant_status], map: "fk_applicant_applicant_status_idx")
+}
