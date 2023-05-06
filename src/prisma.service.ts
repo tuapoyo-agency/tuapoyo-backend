@@ -13,3 +13,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 }
+
+declare global {
+  interface BigInt {
+    toJSON(): string;
+  }
+}
+
+BigInt.prototype.toJSON = function (): string {
+  return this.toString();
+};
