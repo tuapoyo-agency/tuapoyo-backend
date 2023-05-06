@@ -38,9 +38,9 @@ model Person {
   id_person         Int      @id @default(autoincrement())
   first_name        String   @db.VarChar(45)
   last_name         String   @db.VarChar(45)
-  phone             String   @db.VarChar(45)
-  dpi               Int
-  email             String   @db.VarChar(45)
+  phone             Int      @unique
+  dpi               BigInt   @unique
+  email             String   @unique @db.VarChar(45)
   profilePic        String?  @db.VarChar(255)
   id_gender         Int
   gender            Gender  @relation(fields: [id_gender], references: [id_gender], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_gender")
