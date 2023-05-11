@@ -21,7 +21,7 @@ export class PersonsService {
             id_gender: createPersonDto.genderId,
           },
         },
-        active: 1,
+        active: true,
         date_added: new Date(),
         date_modified: new Date(),
       },
@@ -58,7 +58,7 @@ export class PersonsService {
     return this.prisma.person.update({
       where: { id_person: id },
       data: {
-        active: 0,
+        active: false,
       },
     });
   }

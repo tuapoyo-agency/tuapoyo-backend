@@ -44,7 +44,7 @@ model Person {
   profilePic        String?  @db.VarChar(255)
   id_gender         Int
   gender            Gender  @relation(fields: [id_gender], references: [id_gender], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_gender")
-  active            Int
+  active            Boolean
   date_added        DateTime @default(now()) @db.DateTime(0)
   date_modified     DateTime @default(now()) @db.DateTime(0)
   candidate         Candidate?
@@ -77,26 +77,26 @@ model Candidate {
   work_schedule     Work_Schedule @relation(fields: [id_work_schedule], references: [id_work_schedule], onDelete: NoAction, onUpdate: NoAction, map: "fk_person_id_work_schedule")
   children_no       Int
   children_description String? @db.VarChar(255)
-  can_read          Int
-  can_write         Int
+  can_read          Boolean
+  can_write         Boolean
   yoe               Int
   yoe_description   String?   @db.VarChar(255)
   cook_level        Int
-  hand_wash         Int
-  washing_machine   Int
-  iron              Int
-  stove             Int
-  coffee_maker      Int
-  microwave         Int
-  blender           Int
-  children_care_experience Int
+  hand_wash         Boolean
+  washing_machine   Boolean
+  iron              Boolean
+  stove             Boolean
+  coffee_maker      Boolean
+  microwave         Boolean
+  blender           Boolean
+  children_care_experience Boolean
   children_care_description String?   @db.VarChar(255)
-  tattoos           Int
-  pregnant          Int
-  disability        Int
+  tattoos           Boolean
+  pregnant          Boolean
+  disability        Boolean
   disability_description String?   @db.VarChar(255)
-  pet_care          Int
-  uniform           Int
+  pet_care          Boolean
+  uniform           Boolean
   availability      Int
   expected_salary   Decimal?      @db.Decimal(15, 2)
   date_added        DateTime @default(now()) @db.DateTime(0)
@@ -140,8 +140,8 @@ model Job {
   longitude         Decimal  @db.Decimal(18, 15)
   id_work_schedule  Int
   work_schedule     Work_Schedule @relation(fields: [id_work_schedule], references: [id_work_schedule], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_id_work_schedule")
-  children_care     Int
-  pet_care          Int
+  children_care     Boolean
+  pet_care          Boolean
   min_salary        Decimal      @db.Decimal(15, 2)
   max_salary        Decimal      @db.Decimal(15, 2)
   job_description   String?   @db.VarChar(255)

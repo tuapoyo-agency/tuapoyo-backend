@@ -7,7 +7,7 @@ export class Person {
   email: string;
   profilePic: string;
   genderId: number;
-  active: number;
+  active: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
