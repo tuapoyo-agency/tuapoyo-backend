@@ -10,6 +10,7 @@ import { WorkSchedulesModule } from './work-schedules/work-schedules.module';
 import { ApplicantStatusModule } from './applicant-status/applicant-status.module';
 import { EmployersModule } from './employers/employers.module';
 import { CandidatesModule } from './candidates/candidates.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CandidatesModule } from './candidates/candidates.module';
     ApplicantStatusModule,
     EmployersModule,
     CandidatesModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
